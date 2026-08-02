@@ -64,6 +64,6 @@ if st.button("Predict Purchase"): # Moved the button here
         st.success(f"The customer is likely to purchase the package! (Probability: {prediction_proba[0]:.2f})")
     else:
         st.warning(f"The customer is not likely to purchase the package. (Probability: {prediction_proba[0]:.2f})")
-    
+
     st.write("\n--- Raw Input Data ---")
     st.dataframe(input_data)
