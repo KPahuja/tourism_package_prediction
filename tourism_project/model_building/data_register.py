@@ -25,6 +25,5 @@ print("\nData Head:")
 print(df.head())
 print("\nData Info:")
 print(df.info())
-print("Failure distribution:")
-print(df["Failure"].value_counts())
-
+print("ProdTaken distribution:")
+print(df["ProdTaken"].value_counts())
