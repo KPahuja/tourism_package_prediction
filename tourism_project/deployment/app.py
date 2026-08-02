@@ -9,6 +9,9 @@ model = joblib.load(model_path)
 st.title("Tourism Package Purchase Prediction")
 st.write("Enter customer details to predict if they will purchase the Wellness Tourism Package.")
 
+# Input fields for features
+with st.sidebar:
+    st.header("Customer Information")
     age = st.number_input("Age", min_value=18, max_value=80, value=30)
     typeofcontact = st.selectbox("Type of Contact", ['Self Enquiry', 'Company Invited'])
     citytier = st.selectbox("City Tier", [1, 2, 3])
@@ -29,6 +32,8 @@ st.write("Enter customer details to predict if they will purchase the Wellness T
     numberoffollowups = st.number_input("Number of Followups", min_value=0.0, value=3.0)
 
 
+if st.button("Predict Purchase"): # Moved the button here
+    # Create DataFrame from inputs
     input_data = pd.DataFrame([{
         'Age': age,
         'TypeofContact': typeofcontact,
@@ -50,8 +55,15 @@ st.write("Enter customer details to predict if they will purchase the Wellness T
         'NumberOfFollowups': numberoffollowups
     }])
 
-    if st.button("Predict Purchase"):
-    prediction = model.predict(input_data)[0]
-    result = "The customer is likely to purchase the package!" if prediction == 1 else "The customer is not likely to purchase the package!"
+    # Make prediction
+    prediction_proba = model.predict_proba(input_data)[:, 1]
+    prediction = (prediction_proba >= 0.45).astype(int) # Using the same threshold as in training
+
     st.subheader("Prediction Result:")
-    st.success(f"The model predicts: **{result}**")
+    if prediction[0] == 1:
+        st.success(f"The customer is likely to purchase the package! (Probability: {prediction_proba[0]:.2f})")
+    else:
+        st.warning(f"The customer is not likely to purchase the package. (Probability: {prediction_proba[0]:.2f})")
+    
+    st.write("\n--- Raw Input Data ---")
+    st.dataframe(input_data)
